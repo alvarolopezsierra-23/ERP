@@ -26,7 +26,7 @@ public class ReporteService {
     }
 
     // Total de ventas
-    public double generarReporteVentasTotales() {
+    public int generarReporteVentasTotales() {
         return ventaService.listarVentas().size();
     }
 
@@ -59,11 +59,13 @@ public class ReporteService {
     // Productos más vendidos
     public List<Map.Entry<Producto, Integer>> generarReporteProductosMasVendidos() {
         Map<Producto, Integer> productosVendidos = new HashMap<>();
-        ventaService.listarVentas().forEach(venta ->
+        ventaService.listarVentas().forEach(venta -> {
+            if (venta.getDetalles() != null) {
                 venta.getDetalles().forEach(detalle -> {
                     productosVendidos.merge(detalle.getProducto(), detalle.getCantidad(), Integer::sum);
-                })
-        );
+                });
+            }
+        });
 
         return productosVendidos.entrySet().stream()
                 .sorted(Map.Entry.<Producto, Integer>comparingByValue().reversed())

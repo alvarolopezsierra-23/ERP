@@ -27,21 +27,21 @@ public class ProductoService {
         return productoRepository.findAll();
     }
 
-    public Producto actualizarStock(int id, int cantidad) {
-        Producto producto = productoRepository.findById(id).orElseThrow(() -> new RuntimeException("Producto con id " + id + " no encontrado"));
-        if (producto != null) {
-            int nuevoStock = producto.getStock() - cantidad;
-            if (nuevoStock < 0) {
-                throw new IllegalArgumentException("El stock no puede ser negativo");
-            }
-            producto.setStock(nuevoStock);
-            return productoRepository.save(producto);
-        }
-        return null;
-    }
-
     public void eliminarProducto(int id){
         productoRepository.deleteById(id);
+    }
+
+    public Producto actualizarStock(int id, int cantidad) {
+        Producto producto = productoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Producto con id " + id + " no encontrado"));
+
+        int nuevoStock = producto.getStock() - cantidad;
+        if (nuevoStock < 0) {
+            throw new IllegalArgumentException("El stock no puede ser negativo");
+        }
+
+        producto.setStock(nuevoStock);
+        return productoRepository.save(producto);
     }
 
 

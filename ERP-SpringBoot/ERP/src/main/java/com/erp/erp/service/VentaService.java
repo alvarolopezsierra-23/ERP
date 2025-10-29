@@ -5,6 +5,7 @@ import com.erp.erp.model.Producto;
 import com.erp.erp.model.Venta;
 import com.erp.erp.repository.VentaRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -21,14 +22,6 @@ public class VentaService {
         ventaRepository.save(v);
     }
 
-    public void agregarDetalle(Venta venta, Producto producto, int cantidad) {
-        DetalleVenta detalle = new DetalleVenta(producto, cantidad);
-        venta.addDetalle(detalle);
-        ventaRepository.save(venta);
-        producto.setStock(producto.getStock() - cantidad);
-    }
-
-
     public Venta buscarVenta(int id){
         return ventaRepository.findById(id).orElseThrow(() -> new RuntimeException("Venta con id " + id + " no encontrada"));
     }
@@ -43,6 +36,23 @@ public class VentaService {
                 .mapToDouble(Venta::getTotal)
                 .sum();
     }
+
+    @Transactional
+    public void agregarDetalle(int idVenta, Producto producto, int cantidad) {
+        Venta venta = ventaRepository.findById(idVenta)
+                .orElseThrow(() -> new RuntimeException("Venta con id " + idVenta + " no encontrada"));
+
+        DetalleVenta detalle = new DetalleVenta(producto, cantidad);
+        venta.addDetalle(detalle);
+
+        producto.setStock(producto.getStock() - cantidad);
+        if (producto.getStock() < 0) {
+            throw new IllegalArgumentException("No hay suficiente stock del producto: " + producto.getNombre());
+        }
+
+        ventaRepository.save(venta);
+    }
+
 
     public void eliminarVenta(int id){
         ventaRepository.deleteById(id);

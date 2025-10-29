@@ -19,10 +19,6 @@ public class EmpleadoService {
         return empleadoRepository.save(e);
     }
 
-    public void eliminarEmpleado(int id){
-        empleadoRepository.deleteById(id);
-    }
-
     public Empleado buscarEmpleado(int id){
         return empleadoRepository.findById(id).orElseThrow(() -> new RuntimeException("Empleado con id " + id + " no encontrado"));
     }
@@ -31,16 +27,21 @@ public class EmpleadoService {
         return empleadoRepository.findAll();
     }
 
-    public Empleado editarEmpleado(int id, Empleado nuevosDatos){
-        Empleado empleado = empleadoRepository.findById(id).orElseThrow(() -> new RuntimeException("Empleado con id " + id + " no encontrado"));
-        if(empleado != null){
-            empleado.setNombre(nuevosDatos.getNombre());
-            empleado.setEmail(nuevosDatos.getEmail());
-            empleado.setPuesto(nuevosDatos.getPuesto());
-            empleado.setSalario(nuevosDatos.getSalario());
-            return empleadoRepository.save(empleado);
-        }
-        return null;
+    public void eliminarEmpleado(int id){
+        empleadoRepository.deleteById(id);
     }
+
+    public Empleado editarEmpleado(int id, Empleado nuevosDatos){
+        Empleado empleado = empleadoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Empleado con id " + id + " no encontrado"));
+
+        empleado.setNombre(nuevosDatos.getNombre());
+        empleado.setEmail(nuevosDatos.getEmail());
+        empleado.setPuesto(nuevosDatos.getPuesto());
+        empleado.setSalario(nuevosDatos.getSalario());
+
+        return empleadoRepository.save(empleado);
+    }
+
 
 }

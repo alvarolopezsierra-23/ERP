@@ -32,12 +32,12 @@ public class ClienteService {
     }
 
     public Cliente editarCliente(int id, Cliente nuevosDatos) {
-        Cliente cliente = clienteRepository.findById(id).orElseThrow(() -> new RuntimeException("Cliente con id " + id + " no encontrado"));
-        if (cliente != null) {
-            cliente.setNombre(nuevosDatos.getNombre());
-            cliente.setEmail(nuevosDatos.getEmail());
-            return clienteRepository.save(cliente);
-        }
-        return null;
+        Cliente cliente = clienteRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Cliente con id " + id + " no encontrado"));
+
+        cliente.setNombre(nuevosDatos.getNombre());
+        cliente.setEmail(nuevosDatos.getEmail());
+        // añade otros campos si los hay
+        return clienteRepository.save(cliente);
     }
 }
